@@ -1,0 +1,17 @@
+{
+  "extends": "airbnb",
+  "env": {
+    "node": true,
+    "mocha": true
+  },
+  "plugins": [
+    "sorting"
+  ],
+  "rules": {
+    "new-cap": 0,
+    "no-underscore-dangle": 0,
+    "sorting/sort-object-props": [ 1, { "ignoreCase": true, "ignoreMethods": false } ],
+    "require-jsdoc": 1,
+    "valid-jsdoc": 1
+  }
+}
