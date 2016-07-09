@@ -16,7 +16,7 @@
     "express": "^4.14.0",
     "mongoose": "^4.5.3",
     "passport": "^0.3.2",
-    "passport-http": "^0.3.0",
+    "passport-http": "^0.3.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
