@@ -1,6 +1,6 @@
 {
   "name": "express-mongoose-rest-api",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "express/mongoose based spawnable rest api",
   "main": "index.js",
   "scripts": {
