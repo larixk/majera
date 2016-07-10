@@ -40,10 +40,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/larixk/storage-api.git"
+    "url": "git+https://github.com/larixk/majera.git"
   },
   "bugs": {
-    "url": "https://github.com/larixk/storage-api/issues"
+    "url": "https://github.com/larixk/majera/issues"
   },
-  "homepage": "https://github.com/larixk/storage-api#readme"
+  "homepage": "https://github.com/larixk/majera#readme"
 }
