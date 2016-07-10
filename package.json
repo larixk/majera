@@ -1,7 +1,7 @@
 {
   "name": "storage",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "[![Travis Status](https://travis-ci.org/larixk/storage-api.svg?branch=master)](https://travis-ci.org/larixk/storage-api?branch=master) [![Coverage Status](https://coveralls.io/repos/github/larixk/storage-api/badge.svg?branch=master)](https://coveralls.io/github/larixk/storage-api?branch=master)",
   "main": "index.js",
   "scripts": {
     "test": "mocha",
@@ -10,7 +10,7 @@
     "travis": "istanbul cover _mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "keywords": [],
-  "author": "",
+  "author": "Larix Kortbeek",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.15.2",
@@ -32,5 +32,16 @@
     "mocha": "^2.5.3",
     "mocha-lcov-reporter": "^1.2.0",
     "supertest": "^1.2.0"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/larixk/storage-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/larixk/storage-api/issues"
+  },
+  "homepage": "https://github.com/larixk/storage-api#readme"
 }
