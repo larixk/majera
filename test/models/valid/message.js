@@ -1,13 +1,13 @@
 module.exports = () => ({
   name: 'Message',
   schema: {
-    date: {
-      default: Date.now,
-      type: Date,
+    properties: {
+      title: {
+        required: true,
+        type: String,
+      },
     },
-    title: {
-      required: true,
-      type: String,
-    },
+    required: ['title'],
+    type: 'object',
   },
 });

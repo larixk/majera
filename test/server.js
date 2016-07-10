@@ -5,15 +5,6 @@ const assert = require('chai').assert;
 const request = require('supertest');
 
 describe('server', () => {
-  it('crashes on boot with invalid models', () => {
-    assert.throws(() => {
-      storage({
-        modelsPath: path.join(__dirname, 'models/invalid'),
-        mongodbUri: 'mongodb://localhost/storage-test',
-      });
-    });
-  });
-
   it('crashes on boot with invalid mongo uri', () => {
     assert.throws(() => {
       storage({

@@ -1,8 +1,10 @@
-
+const validate = require('jsonschema').validate;
 const bodyParser = require('body-parser');
 const auth = require('./auth');
+const mongodb = require('mongodb');
+const ObjectID = mongodb.ObjectID;
 
-module.exports = (app, options) => {
+module.exports = (app, db, options) => {
   const authenticate = auth(app, options.verify);
 
   const getModel = (req, res, next) => {
@@ -32,7 +34,7 @@ module.exports = (app, options) => {
     getModel,
     authenticate,
     (req, res) => {
-      res.locals.model.mongooseModel.find().exec((err, results) => {
+      db.collection(res.locals.model.name).find().toArray((err, results) => {
         res.json(results);
       });
     }
@@ -43,13 +45,26 @@ module.exports = (app, options) => {
     getModel,
     authenticate,
     (req, res) => {
-      const instance = new res.locals.model.mongooseModel(req.body);
-      instance.save((err) => {
-        if (err) {
-          return res.status(400).send(err.message);
+      if (!validate(req.body, res.locals.model.schema).valid) {
+        return res.status(400).send();
+      }
+      return db.collection(res.locals.model.name).insertOne(
+        req.body,
+        (err, writeResult) => {
+          if (err) {
+            return res.status(400).send(err.message);
+          }
+          return db.collection(res.locals.model.name).findOne(
+            { _id: ObjectID(writeResult.insertedId) },
+            (findErr, findResult) => {
+              if (err || !findResult) {
+                return res.status(404).send();
+              }
+              return res.json(findResult);
+            }
+          );
         }
-        return res.status(200).send(instance.toJSON());
-      });
+      );
     }
   );
 
@@ -58,12 +73,15 @@ module.exports = (app, options) => {
     getModel,
     authenticate,
     (req, res) => {
-      res.locals.model.mongooseModel.findById(req.params.id).exec((err, result) => {
-        if (err || !result) {
-          return res.status(404).send();
+      db.collection(res.locals.model.name).findOne(
+        { _id: ObjectID(req.params.id) },
+        (err, result) => {
+          if (err || !result) {
+            return res.status(404).send();
+          }
+          return res.json(result);
         }
-        return res.json(result);
-      });
+      );
     }
   );
 
@@ -72,18 +90,27 @@ module.exports = (app, options) => {
     getModel,
     authenticate,
     (req, res) => {
-      res.locals.model.mongooseModel.findById(req.params.id).exec((findError, instance) => {
-        if (findError || !instance) {
-          return res.status(404).send();
-        }
-        instance.set(req.body);
-        return instance.save((saveError) => {
-          if (saveError) {
-            return res.status(400).send(saveError.message);
+      if (!validate(req.body, res.locals.model.schema).valid) {
+        return res.status(400).send();
+      }
+      return db.collection(res.locals.model.name).replaceOne(
+        { _id: ObjectID(req.params.id) },
+        req.body,
+        (writeError) => {
+          if (writeError) {
+            return res.status(400).send(writeError.message);
           }
-          return res.status(200).send(instance.toJSON());
-        });
-      });
+          return db.collection(res.locals.model.name).findOne(
+            { _id: ObjectID(req.params.id) },
+            (findErr, findResult) => {
+              if (findErr || !findResult) {
+                return res.status(404).send();
+              }
+              return res.json(findResult);
+            }
+          );
+        }
+      );
     }
   );
 };

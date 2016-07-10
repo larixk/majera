@@ -1,8 +1,9 @@
 const path = require('path');
 const express = require('express');
-const mongoose = require('mongoose');
+const mongodb = require('mongodb');
 const api = require('./api');
 const loadModels = require('./loadModels');
+const debug = require('debug')('storage:server');
 
 const defaults = {
   basePath: '/storage',
@@ -22,20 +23,12 @@ const combineOptions = (customOptions, defaultOptions) => {
   return options;
 };
 
-const connectToMongodb = (uri) => {
-  mongoose.connect(uri);
-  const db = mongoose.connection;
-  db.once('error', () => {
-    throw new Error(`Could not connect to  MongoDB at '${uri}'`);
-  });
-  return db;
-};
-
 const server = (customOptions) => {
+  debug('starting');
+
   const options = combineOptions(customOptions, defaults);
 
-  const db = connectToMongodb(options.mongodbUri);
-
+  let db;
   let listener;
   let app;
 
@@ -59,7 +52,9 @@ const server = (customOptions) => {
     }
   };
 
-  const ready = (err) => {
+  const onReady = (err) => {
+    debug('server ready');
+
     status = 'running';
     if (!options.callback) {
       return;
@@ -67,7 +62,11 @@ const server = (customOptions) => {
     options.callback(err, app, listener);
   };
 
-  const startApp = () => {
+  const onMongoConnected = (err, connection) => {
+    debug('mongodb connected');
+
+    db = connection;
+
     if (status === 'destroying') {
       destroy(savedDestroyCallback);
       return;
@@ -79,16 +78,18 @@ const server = (customOptions) => {
       app = express();
     }
 
-    api(app, options);
+    api(app, db, options);
 
     if (!options.app) {
-      listener = app.listen(options.port, ready);
+      listener = app.listen(options.port, onReady);
     } else {
-      ready();
+      onReady();
     }
   };
 
-  db.once('open', startApp);
+
+  debug(`connecting to mongo at ${options.mongodbUri}`);
+  mongodb.MongoClient.connect(options.mongodbUri, onMongoConnected);
 
   return {
     app: () => app,

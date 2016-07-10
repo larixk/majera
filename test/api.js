@@ -136,17 +136,17 @@ describe('api', () => {
   });
 
 
-  it('returns 404s when updating non-existing models', (done) => {
+  it('returns 400s when updating non-existing models', (done) => {
     request(storageServer.app())
       .post('/storage/message/doesnotexist')
-      .expect(404)
+      .expect(400)
       .end(done);
   });
 
   it('returns a 400 when invalidly updating models', (done) => {
     request(storageServer.app())
       .post(`/storage/message/${lastMessageId}`)
-      .send({ title: null })
+      .send({ whatever: 1 })
       .expect(400)
       .end(done);
   });

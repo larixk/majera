@@ -1,7 +1,7 @@
 {
-  "name": "express-mongoose-rest-api",
+  "name": "storage-api",
   "version": "0.1.0",
-  "description": "express/mongoose based spawnable rest api",
+  "description": "express/jsonschema based spawnable rest api",
   "main": "index.js",
   "scripts": {
     "test": "mocha",
@@ -14,8 +14,10 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.15.2",
+    "debug": "^2.2.0",
     "express": "^4.14.0",
-    "mongoose": "^4.5.3",
+    "jsonschema": "^1.1.0",
+    "mongodb": "^2.2.0",
     "passport": "^0.3.2",
     "passport-http": "^0.3.0"
   },
