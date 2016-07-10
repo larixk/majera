@@ -1,7 +1,7 @@
 {
   "name": "express-mongoose-rest-api",
   "version": "0.0.1",
-  "description": "[![Travis Status](https://travis-ci.org/larixk/storage-api.svg?branch=master)](https://travis-ci.org/larixk/storage-api?branch=master) [![Coverage Status](https://coveralls.io/repos/github/larixk/storage-api/badge.svg?branch=master)](https://coveralls.io/github/larixk/storage-api?branch=master)",
+  "description": "express/mongoose based spawnable rest api",
   "main": "index.js",
   "scripts": {
     "test": "mocha",
