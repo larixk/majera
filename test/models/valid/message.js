@@ -3,8 +3,7 @@ module.exports = () => ({
   schema: {
     properties: {
       title: {
-        required: true,
-        type: String,
+        type: 'string',
       },
     },
     required: ['title'],
