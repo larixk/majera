@@ -3,10 +3,10 @@ const express = require('express');
 const mongodb = require('mongodb');
 const api = require('./api');
 const loadModels = require('./loadModels');
-const debug = require('debug')('storage:server');
+const debug = require('debug')('majera:server');
 
 const defaults = {
-  basePath: '/storage',
+  basePath: '/majera',
   models: {},
   mongodbUri: process.env.MONGODB_URI,
   port: process.env.PORT || 3000,

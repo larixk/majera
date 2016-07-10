@@ -1,26 +1,26 @@
 const path = require('path');
-const storage = require('..');
+const majera = require('..');
 const assert = require('chai').assert;
 const request = require('supertest');
 
 describe('api', () => {
-  let storageServer;
+  let majeraServer;
 
   before((done) => {
-    storageServer = storage({
+    majeraServer = majera({
       callback: done,
       modelsPath: path.join(__dirname, 'models/valid'),
-      mongodbUri: 'mongodb://localhost/storage-test',
+      mongodbUri: 'mongodb://localhost/majera-test',
     });
   });
 
-  after((done) => storageServer.destroy(done));
+  after((done) => majeraServer.destroy(done));
 
   // List models
 
   it('shows all models when authenticated', (done) => {
-    request(storageServer.app())
-      .get('/storage')
+    request(majeraServer.app())
+      .get('/majera')
       .expect(200)
       .expect((res) => {
         assert.isObject(res.body.models.message, 'Message model is available');
@@ -31,8 +31,8 @@ describe('api', () => {
   // List instances
 
   it('returns a 404 when getting non existing models', (done) => {
-    request(storageServer.app())
-      .get('/storage/unicorns')
+    request(majeraServer.app())
+      .get('/majera/unicorns')
       .expect(404)
       .end(done);
   });
@@ -40,8 +40,8 @@ describe('api', () => {
   let messageCount;
 
   it('lists instances of a model', (done) => {
-    request(storageServer.app())
-      .get('/storage/message')
+    request(majeraServer.app())
+      .get('/majera/message')
       .expect(200)
       .expect((res) => {
         assert.isArray(res.body);
@@ -55,8 +55,8 @@ describe('api', () => {
   let lastMessageId;
 
   it('creates models', (done) => {
-    request(storageServer.app())
-      .post('/storage/message')
+    request(majeraServer.app())
+      .post('/majera/message')
       .send({ title: 'test' })
       .expect(200)
       .expect((res) => {
@@ -68,8 +68,8 @@ describe('api', () => {
   });
 
   it('is persistent', (done) => {
-    request(storageServer.app())
-      .get('/storage/message')
+    request(majeraServer.app())
+      .get('/majera/message')
       .expect(200)
       .expect((res) => {
         assert.equal(res.body.length, messageCount + 1);
@@ -78,16 +78,16 @@ describe('api', () => {
   });
 
   it('returns a 400 when posting invalid models', (done) => {
-    request(storageServer.app())
-      .post('/storage/message')
+    request(majeraServer.app())
+      .post('/majera/message')
       .send({ invalid: 'test' })
       .expect(400)
       .end(done);
   });
 
   it('returns a 404 when posting non existing models', (done) => {
-    request(storageServer.app())
-      .post('/storage/unicorns')
+    request(majeraServer.app())
+      .post('/majera/unicorns')
       .expect(404)
       .end(done);
   });
@@ -95,8 +95,8 @@ describe('api', () => {
   // Read
 
   it('reads models', (done) => {
-    request(storageServer.app())
-      .get(`/storage/message/${lastMessageId}`)
+    request(majeraServer.app())
+      .get(`/majera/message/${lastMessageId}`)
       .expect(200)
       .expect((res) => {
         assert.isObject(res.body, 'Message is available');
@@ -106,8 +106,8 @@ describe('api', () => {
   });
 
   it('returns 404s when getting non-existing models', (done) => {
-    request(storageServer.app())
-      .get('/storage/message/doesnotexist')
+    request(majeraServer.app())
+      .get('/majera/message/doesnotexist')
       .expect(404)
       .end(done);
   });
@@ -115,8 +115,8 @@ describe('api', () => {
   // Update
 
   it('updates models', (done) => {
-    request(storageServer.app())
-      .post(`/storage/message/${lastMessageId}`)
+    request(majeraServer.app())
+      .post(`/majera/message/${lastMessageId}`)
       .send({ title: 'test2' })
       .expect(200)
       .expect((res) => {
@@ -127,8 +127,8 @@ describe('api', () => {
   });
 
   it('updates models persistently', (done) => {
-    request(storageServer.app())
-      .get(`/storage/message/${lastMessageId}`)
+    request(majeraServer.app())
+      .get(`/majera/message/${lastMessageId}`)
       .expect((res) => {
         assert.equal('test2', res.body.title, 'Message title is set');
       })
@@ -137,15 +137,15 @@ describe('api', () => {
 
 
   it('returns 400s when updating non-existing models', (done) => {
-    request(storageServer.app())
-      .post('/storage/message/doesnotexist')
+    request(majeraServer.app())
+      .post('/majera/message/doesnotexist')
       .expect(400)
       .end(done);
   });
 
   it('returns a 400 when invalidly updating models', (done) => {
-    request(storageServer.app())
-      .post(`/storage/message/${lastMessageId}`)
+    request(majeraServer.app())
+      .post(`/majera/message/${lastMessageId}`)
       .send({ whatever: 1 })
       .expect(400)
       .end(done);

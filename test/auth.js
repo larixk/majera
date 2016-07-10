@@ -1,28 +1,28 @@
-const storage = require('..');
+const majera = require('..');
 const request = require('supertest');
 
 describe('no auth', () => {
-  let storageServer;
+  let majeraServer;
 
   before((done) => {
-    storageServer = storage({
+    majeraServer = majera({
       callback: done,
-      mongodbUri: 'mongodb://localhost/storage-test',
+      mongodbUri: 'mongodb://localhost/majera-test',
     });
   });
 
-  after((done) => storageServer.destroy(done));
+  after((done) => majeraServer.destroy(done));
 
   it('shows data when not logged in', (done) => {
-    request(storageServer.app())
-      .get('/storage')
+    request(majeraServer.app())
+      .get('/majera')
       .expect(200)
       .end(done);
   });
 });
 
 describe('basic auth', () => {
-  let storageServer;
+  let majeraServer;
 
   const verify = (username, password, done) => {
     if (username !== 'user' || password !== 'pass') {
@@ -32,33 +32,33 @@ describe('basic auth', () => {
   };
 
   before((done) => {
-    storageServer = storage({
+    majeraServer = majera({
       callback: done,
-      mongodbUri: 'mongodb://localhost/storage-test',
+      mongodbUri: 'mongodb://localhost/majera-test',
       verify,
     });
   });
 
-  after((done) => storageServer.destroy(done));
+  after((done) => majeraServer.destroy(done));
 
   it('blocks access if not logged in', (done) => {
-    request(storageServer.app())
-      .get('/storage')
+    request(majeraServer.app())
+      .get('/majera')
       .expect(401)
       .end(done);
   });
 
   it('blocks access if authenticated incorrectly', (done) => {
-    request(storageServer.app())
-      .get('/storage')
+    request(majeraServer.app())
+      .get('/majera')
       .auth('user', 'wrong')
       .expect(401)
       .end(done);
   });
 
   it('shows data when authenticated', (done) => {
-    request(storageServer.app())
-      .get('/storage')
+    request(majeraServer.app())
+      .get('/majera')
       .auth('user', 'pass')
       .expect(200)
       .end(done);

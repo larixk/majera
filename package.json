@@ -1,7 +1,7 @@
 {
-  "name": "storage-api",
+  "name": "majera",
   "version": "0.1.0",
-  "description": "express/jsonschema based spawnable rest api",
+  "description": "MongoDB and jsonschema express rest api",
   "main": "index.js",
   "scripts": {
     "test": "mocha",

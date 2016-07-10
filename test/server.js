@@ -1,5 +1,5 @@
 const path = require('path');
-const storage = require('..');
+const majera = require('..');
 const express = require('express');
 const assert = require('chai').assert;
 const request = require('supertest');
@@ -7,54 +7,54 @@ const request = require('supertest');
 describe('server', () => {
   it('crashes on boot with invalid mongo uri', () => {
     assert.throws(() => {
-      storage({
-        mongodbUri: 'http://127.0.0.2/storage-test',
+      majera({
+        mongodbUri: 'http://127.0.0.2/majera-test',
       });
     });
   });
 
   it('can be destroyed immediately', (done) => {
-    storage({
-      mongodbUri: 'mongodb://localhost/storage-test',
+    majera({
+      mongodbUri: 'mongodb://localhost/majera-test',
     }).destroy(done);
   });
 
   it('allows you to bring your own express app', (done) => {
     const app = express();
-    const storageServer = storage({
+    const majeraServer = majera({
       app,
-      callback: () => storageServer.destroy(done),
-      mongodbUri: 'mongodb://localhost/storage-test',
+      callback: () => majeraServer.destroy(done),
+      mongodbUri: 'mongodb://localhost/majera-test',
     });
   });
 
   it('allows you to set your own path for urls', (done) => {
-    const storageServer = storage({
+    const majeraServer = majera({
       basePath: '/testing',
       callback: () => {
-        request(storageServer.app())
+        request(majeraServer.app())
           .get('/testing')
           .expect(200)
-          .end(() => storageServer.destroy(done));
+          .end(() => majeraServer.destroy(done));
       },
-      mongodbUri: 'mongodb://localhost/storage-test',
+      mongodbUri: 'mongodb://localhost/majera-test',
     });
   });
 
   it('only needs a working mongodb', (done) => {
-    const storageServer = storage({
-      mongodbUri: 'mongodb://localhost/storage-test',
+    const majeraServer = majera({
+      mongodbUri: 'mongodb://localhost/majera-test',
     });
 
     // Use ugly intervals to show it works without using callbacks
     let interval = setInterval(() => {
-      if (storageServer.status() !== 'running') {
+      if (majeraServer.status() !== 'running') {
         return;
       }
       clearInterval(interval);
-      storageServer.destroy();
+      majeraServer.destroy();
       interval = setInterval(() => {
-        if (storageServer.status() !== 'destroyed') {
+        if (majeraServer.status() !== 'destroyed') {
           return;
         }
         clearInterval(interval);
