@@ -1,6 +1,6 @@
 {
   "name": "majera",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "MongoDB and jsonschema express rest api",
   "main": "index.js",
   "scripts": {
