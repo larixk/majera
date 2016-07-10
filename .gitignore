@@ -1,4 +1,5 @@
 node_modules
-npm-debug.log
-.DS_Store
+npm-debug.logl
 coverage
+.coveralls.yml
+.DS_Store
